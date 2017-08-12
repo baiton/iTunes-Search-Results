@@ -9,18 +9,35 @@ let searchArea = document.querySelector(".search");
 let actualSearchForm = document.querySelector(".search-form");
 let resultsArea = document.querySelector(".resultWrapper");
 let submitButton = document.getElementById("button");
+let eachSong = document.querySelector(".song");
 
 let getSearch = encodeURIComponent("");
 
 let baseURL = "https://itunes.apple.com/search?term="
-
+let songUrl = ""
 // 2. Create your `submit` event for getting the user's search term
+function playSong(url){
+  actualPlayer.setAttribute("src", url);
+}
+
+// This is to clear search results
+function clearPage (){
+  resultsArea.innerHTML = "";
+}
 
 actualSearchForm.addEventListener("submit", function(event) {
   event.preventDefault()
-  console.log("clicked");
+  // console.log("clicked");
   getSearch = event.target.querySelector("input[name='search']").value
 
+  actualSearchForm.addEventListener("submit", callSearchAudio());
+  function callSearchAudio(){
+    let sound = document.getElementById("searchAudio")
+    sound.play();
+  }
+
+// This clears the last search results
+    clearPage();
 
 
   // 3. Create your `fetch` request that is called after a submission
@@ -36,13 +53,14 @@ actualSearchForm.addEventListener("submit", function(event) {
             function myHtml(data) {
               let song = songs[i];
               let results = `
-                <div class="song">
+                <div class="song" onclick="playSong('${song.previewUrl}')">
                   <img src="${song.artworkUrl100}" alt="Album Artwork">
                   <p class="track">${song.trackName}</p>
                   <p class="band">${song.artistName}</p>
                 </div>
             `
               return results;
+
             }
             let addingSongs = myHtml(data);
             resultsArea.innerHTML += addingSongs;
